@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETÜ Destek Sistemi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="loading-screen" class="hidden">
+        <div class="loader"></div>
+        <p id="loading-text">İşlem Yapılıyor...</p>
+    </div>
+
+    <div id="custom-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div id="modal-icon" class="modal-icon"></div>
+            <h3 id="modal-title">Başlık</h3>
+            <p id="modal-message">Mesaj</p>
+            <button onclick="closeModal()" class="modal-btn">Tamam</button>
+        </div>
+    </div>
+
+    <div id="confirmation-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-icon error"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3>Emin misiniz?</h3>
+            <p>Bu talep kalıcı olarak silinecektir. Bu işlem geri alınamaz.</p>
+            <div class="modal-buttons">
+                <button onclick="closeConfirmModal()" class="btn-no">Vazgeç</button>
+                <button onclick="confirmDeleteAction()" class="btn-yes">Evet, Sil</button>
+            </div>
+        </div>
+    </div>
+
+    <section id="login-view" class="login-container">
+        <div class="login-box">
+            <div class="login-logo">
+                <img src="etü_logo.png" alt="ETÜ Logo" class="etu-logo-login">
+                <h2>ETÜ Destek Sistemi</h2>
+                <p>Lütfen giriş türünü seçiniz</p>
+            </div>
+            <div class="login-tabs">
+                <button class="tab-btn active" onclick="switchTab('personel')">Personel Girişi</button>
+                <button class="tab-btn" onclick="switchTab('admin')">Yönetici (Admin)</button>
+            </div>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <input type="hidden" id="login-type" value="personel">
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Şifre" required>
+                </div>
+                <button type="submit" class="login-btn">Giriş Yap</button>
+            </form>
+            <p class="footer-text">© 2025 Erzurum Teknik Üniversitesi</p>
+        </div>
+    </section>
+
+    <div id="main-app" class="hidden">
+        <header>
+            <div class="top-bar">
+                <div class="logo-area">
+                    <img src="etü_logo.png" alt="ETÜ Logo" class="etu-logo-header">
+                    <div class="university-title">
+                        <h2>Erzurum Teknik Üniversitesi</h2>
+                        <p>YOF Destek</p>
+                    </div>
+                </div>
+                <div class="user-info-area">
+                    <span id="user-display-personel" class="welcome-text">Hoşgeldiniz</span>
+                    <button class="nav-btn" onclick="openMyRequests()">
+                        <i class="fa-solid fa-list-check"></i> Taleplerim
+                    </button>
+                    <button class="auth-btn" onclick="logout()">
+                        <i class="fa-solid fa-power-off"></i> Çıkış Yap
+                    </button>
+                </div>
+            </div>
+            <div class="blue-nav">
+                <h3>Yapım Onarım Destek Sistemi</h3>
+            </div>
+        </header>
+
+        <main class="container">
+            <div class="breadcrumb">Ana Sayfa > Yeni Destek Talebi</div>
+            <h2 class="page-title">Size nasıl yardımcı olabiliriz?</h2>
+
+            <div class="category-grid">
+                <div class="category-card" onclick="startFormProcess('Kalorifer')">
+                    <div class="icon-circle"><i class="fa-solid fa-fire"></i></div>
+                    <span>Kalorifer</span><i class="fa-solid fa-chevron-right arrow"></i>
+                </div>
+                <div class="category-card" onclick="startFormProcess('Elektrik')">
+                    <div class="icon-circle"><i class="fa-solid fa-bolt"></i></div>
+                    <span>Elektrik</span><i class="fa-solid fa-chevron-right arrow"></i>
+                </div>
+                <div class="category-card" onclick="startFormProcess('Mobilya')">
+                    <div class="icon-circle"><i class="fa-solid fa-couch"></i></div>
+                    <span>Mobilya</span><i class="fa-solid fa-chevron-right arrow"></i>
+                </div>
+                <div class="category-card" onclick="startFormProcess('Tesisat')">
+                    <div class="icon-circle"><i class="fa-solid fa-faucet"></i></div>
+                    <span>Tesisat</span><i class="fa-solid fa-chevron-right arrow"></i>
+                </div>
+                <div class="category-card" onclick="startFormProcess('Fayans Boya')">
+                    <div class="icon-circle"><i class="fa-solid fa-paint-roller"></i></div>
+                    <span>Fayans Boya</span><i class="fa-solid fa-chevron-right arrow"></i>
+                </div>
+                <div class="category-card" onclick="startFormProcess('Metal İşleri')">
+                    <div class="icon-circle"><i class="fa-solid fa-hammer"></i></div>
+                    <span>Metal İşleri</span><i class="fa-solid fa-chevron-right arrow"></i>
+                </div>
+                <div class="category-card" onclick="startFormProcess('Zemin Yıkama')">
+                    <div class="icon-circle"><i class="fa-solid fa-plug"></i></div>
+                    <span>Zemin Yıkama</span><i class="fa-solid fa-chevron-right arrow"></i>
+                </div>
+                <div class="category-card" onclick="startFormProcess('Diğer')">
+                    <div class="icon-circle"><i class="fa-solid fa-ellipsis"></i></div>
+                    <span>Diğer</span><i class="fa-solid fa-chevron-right arrow"></i>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <section id="form-view" class="container hidden">
+        <div class="form-wrapper">
+            <div class="form-header-box">
+                <div class="blue-icon"><i class="fa-solid fa-file-circle-plus"></i></div>
+                <div class="header-text">
+                    <h3>Bir Destek Talebi Gönderin</h3>
+                    <p>Lütfen gerekli alanları doldurunuz.</p>
+                </div>
+            </div>
+
+            <form id="complaint-form" onsubmit="submitForm(event)">
+                <input type="hidden" id="selected-category">
+                <div class="form-group">
+                    <label>Ad Soyad: <span class="red-star">*</span></label>
+                    <input type="text" id="fullname" class="blue-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Konu: <span class="red-star">*</span></label>
+                    <input type="text" id="subject" class="blue-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Açıklama: <span class="red-star">*</span></label>
+                    <textarea id="message" class="blue-input" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Arıza Fotoğrafı (İsteğe Bağlı):</label> 
+                    <div class="file-upload-box">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 40px; color: #007bff; margin-bottom: 10px;"></i>
+                        <p>Fotoğraf yüklemek için buraya tıklayın</p>
+                        <input type="file" id="file-upload" accept="image/*">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="goBack()">Geri Dön</button>
+                    <button type="submit" class="submit-btn">Talebi Gönder</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section id="my-requests-view" class="container hidden">
+        <h2 class="page-title">Taleplerim ve Durumları</h2>
+        <div class="breadcrumb" style="text-align:center; display:block;">Ana Sayfa > Taleplerim</div>
+        <div id="requests-container"></div>
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="cancel-btn" onclick="closeMyRequests()">Ana Sayfaya Dön</button>
+        </div>
+    </section>
+
+    <div id="admin-view" class="hidden">
+        <header>
+            <div class="top-bar">
+                <div class="logo-area">
+                    <img src="etü_logo.png" alt="ETÜ Logo" class="etu-logo-header">
+                    <div class="university-title">
+                        <h2>Yönetici Paneli</h2>
+                        <p>Talepleri Yönet</p>
+                    </div>
+                </div>
+                <div class="user-info-area">
+                    <span id="user-display-admin" class="welcome-text">Hoşgeldiniz, Admin</span>
+                    <button class="auth-btn" onclick="logout()">
+                        <i class="fa-solid fa-power-off"></i> Çıkış Yap
+                    </button>
+                </div>
+            </div>
+            <div class="blue-nav" style="background-color: #a81919;">
+                <h3>Gelen Arıza Talepleri</h3>
+            </div>
+        </header>
+
+        <main class="container">
+            <div class="admin-table-wrapper">
+                <table class="complaint-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Kişi</th>
+                            <th>Arıza</th>
+                            <th>Durum</th>
+                            <th>Fotoğraf</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
